@@ -14,6 +14,7 @@ def main():
     app.add_handler(CallbackQueryHandler(handlers.check_time, pattern="check"))
     app.add_handler(CallbackQueryHandler(handlers.send_gift, pattern="gift"))
     app.add_handler(CallbackQueryHandler(handlers.send_compliment, pattern="compliment"))
+    app.run_polling(drop_pending_updates=True)
 
     app.run_polling()
 
