@@ -39,8 +39,12 @@ def format_time_left(delta):
 
 
 def load_compliments():
-    with open("compliments.txt", encoding="utf-8") as f:
-        return [line.strip() for line in f if line.strip()]
+    try:
+        with open("compliments.txt", encoding="utf-8") as f:
+            return [line.strip() for line in f if line.strip()]
+    except Exception as e:
+        logging.exception("Failed to load compliments")
+        return []
 
 
 COMPLIMENTS = load_compliments()
@@ -132,24 +136,21 @@ async def send_gift(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     if now() < OPEN_TIME:
-        await query.message.reply_text(
-            "Ещё чуть-чуть… 🕯️"
-        )
+        await query.message.reply_text("Ещё чуть-чуть… 🕯️")
         return
 
     file_path = "gift.txt"
 
     if os.path.exists(file_path):
-        await query.message.reply_document(
-            document=open(file_path, "rb"),
-            caption="С Новым годом ❤️"
-        )
+        with open(file_path, "rb") as f:
+            await query.message.reply_document(
+                document=InputFile(f, filename="gift.txt"),
+                caption="С Новым годом ❤️"
+            )
     else:
         await query.message.reply_text(
-            "С Новым годом ❤️\n\n"
-            "Это твой подарок. .!."
+            "С Новым годом ❤️\n\nЭто твой подарок."
         )
-
 
 async def send_compliment(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query

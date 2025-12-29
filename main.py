@@ -6,6 +6,16 @@ from telegram.ext import (
 from config import BOT_TOKEN
 import handlers
 import logging
+from telegram.error import NetworkError
+import asyncio
+
+async def post_init(application):
+    application.create_task(watchdog())
+
+async def watchdog():
+    while True:
+        await asyncio.sleep(60)
+        logging.info("Bot alive")
 
 
 
@@ -15,7 +25,7 @@ def main():
         level=logging.INFO,
     )
 
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    app = ApplicationBuilder().token(BOT_TOKEN).post_init(post_init).build()
 
     app.add_error_handler(handlers.error_handler)
     app.add_handler(CommandHandler("start", handlers.start))
