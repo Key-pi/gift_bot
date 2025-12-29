@@ -4,7 +4,8 @@ from datetime import datetime
 from telegram import (
     Update,
     InlineKeyboardButton,
-    InlineKeyboardMarkup
+    InlineKeyboardMarkup,
+    InputFile
 )
 from telegram.ext import ContextTypes
 from config import SECRET_TOKEN, OPEN_TIME, TIMEZONE
