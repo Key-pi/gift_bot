@@ -8,8 +8,12 @@ from telegram import (
 )
 from telegram.ext import ContextTypes
 from config import SECRET_TOKEN, OPEN_TIME, TIMEZONE
+import logging
 
 
+
+
+WHITE_LIST = [470878254]
 # ---------- helpers ----------
 
 def now():
@@ -57,11 +61,19 @@ def keyboard_after_time():
 
 
 # ---------- handlers ----------
+async def error_handler(update, context):
+    logging.exception("Exception while handling update", exc_info=context.error)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
         await update.message.reply_text(
             "Этот бот принимает гостей только по приглашению ✨"
+        )
+        return
+
+    if update.effective_user.id not in WHITE_LIST:
+        await update.message.reply_text(
+            "Не хорошо трогать чужие QR-коды 😡😡😡"
         )
         return
 
