@@ -1,13 +1,11 @@
 #!/bin/bash
+cd /home/Keypi/gift_bot
+source venv310/bin/activate
 
-echo "Bot supervisor started"
-
-while true
-do
-  echo "Starting bot at $(date)"
-  /home/Keypi/gift_bot/venv310/bin/python /home/Keypi/gift_bot/main.py
-  echo "Bot crashed. Restarting in 5 seconds..."
-  sleep 5
-  echo "Bot crashed at $(date)" >> crash.log
-
+while true; do
+    echo "Starting bot at $(date)"
+    python main.py
+    echo "Bot crashed, restarting in 5s..."
+    echo "Bot crashed at $(date)" >> crash.log
+    sleep 5
 done
