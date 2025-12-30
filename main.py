@@ -9,20 +9,25 @@ import logging
 from telegram.error import NetworkError
 import asyncio
 
+
+async def watchdog(context):
+    logging.info("Bot alive")
+
 async def post_init(application):
-    application.create_task(watchdog())
-
-async def watchdog():
-    while True:
-        await asyncio.sleep(60)
-        logging.info("Bot alive")
-
-
+    application.job_queue.run_repeating(
+        watchdog,
+        interval=60,
+        first=60,
+    )
 
 def main():
     logging.basicConfig(
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        handlers=[
+            logging.FileHandler("bot.log"),
+            logging.StreamHandler(),
+        ],
     )
 
     app = ApplicationBuilder().token(BOT_TOKEN).post_init(post_init).build()
@@ -33,6 +38,8 @@ def main():
     app.add_handler(CallbackQueryHandler(handlers.send_gift, pattern="gift"))
     app.add_handler(CallbackQueryHandler(handlers.send_compliment, pattern="compliment"))
     app.run_polling(drop_pending_updates=True)
+
+    # raise RuntimeError("TEST CRASH")
 
 
 if __name__ == "__main__":

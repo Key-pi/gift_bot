@@ -10,11 +10,15 @@ from telegram import (
 from telegram.ext import ContextTypes
 from config import SECRET_TOKEN, OPEN_TIME, TIMEZONE
 import logging
+from pathlib import Path
 
 
 
+BASE_DIR = Path(__file__).resolve().parent
+COMPLIMENTS_FILE = BASE_DIR / "compliments.txt"
+GIFT_FILE = BASE_DIR / "gift.txt"
+WHITE_LIST = [470878254, 848022779, ]
 
-WHITE_LIST = [470878254]
 # ---------- helpers ----------
 
 def now():
@@ -41,7 +45,7 @@ def format_time_left(delta):
 
 def load_compliments():
     try:
-        with open("compliments.txt", encoding="utf-8") as f:
+        with open(COMPLIMENTS_FILE, encoding="utf-8") as f:
             return [line.strip() for line in f if line.strip()]
     except Exception as e:
         logging.exception("Failed to load compliments")
@@ -140,10 +144,8 @@ async def send_gift(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.message.reply_text("Ещё чуть-чуть… 🕯️")
         return
 
-    file_path = "gift.txt"
-
-    if os.path.exists(file_path):
-        with open(file_path, "rb") as f:
+    if GIFT_FILE.exists():
+        with open(GIFT_FILE, "rb") as f:
             await query.message.reply_document(
                 document=InputFile(f, filename="gift.txt"),
                 caption="С Новым годом ❤️"
