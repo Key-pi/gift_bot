@@ -13,7 +13,7 @@ import asyncio
 async def watchdog(context):
     logging.info("Bot alive")
 
-def post_init(application):
+async def post_init(application):
     application.job_queue.run_repeating(
         watchdog,
         interval=60,

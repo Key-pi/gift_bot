@@ -17,7 +17,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 COMPLIMENTS_FILE = BASE_DIR / "compliments.txt"
 GIFT_FILE = BASE_DIR / "gift.txt"
-WHITE_LIST = [470878254]
+WHITE_LIST = [470878254, 848022779, ]
 
 # ---------- helpers ----------
 
@@ -74,17 +74,17 @@ async def error_handler(update, context):
     logging.exception("Exception while handling update", exc_info=context.error)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # if not context.args:
-    #     await update.message.reply_text(
-    #         "Этот бот принимает гостей только по приглашению ✨"
-    #     )
-    #     return
-    #
-    # if update.effective_user.id not in WHITE_LIST:
-    #     await update.message.reply_text(
-    #         "Не хорошо трогать чужие QR-коды 😡😡😡"
-    #     )
-    #     return
+    if not context.args:
+        await update.message.reply_text(
+            "Этот бот принимает гостей только по приглашению ✨"
+        )
+        return
+
+    if update.effective_user.id not in WHITE_LIST:
+        await update.message.reply_text(
+            "Не хорошо трогать чужие QR-коды 😡😡😡"
+        )
+        return
 
     token = context.args[0]
 
